@@ -59,17 +59,19 @@ def add_product():
 def delete_product(product_id):
 
     product_id = int(product_id)
-
+    product_id_print = str(product_id)
     products = read_products_from_csv()
 
     product_to_be_deleted = [product for product in products if product["id"] == product_id]
 
     new_list = [product for product in products if product["id"] != product_id]
 
+    message = "product id " + product_id_print + " not found"
+
     rewrite_products_in_csv(new_list)
 
     if len(product_to_be_deleted) == 0:
-        return {"message": "ID not found"}, HTTPStatus.NOT_FOUND
+        return {"error": message}, HTTPStatus.NOT_FOUND
 
     return product_to_be_deleted[0], HTTPStatus.OK
 
@@ -82,8 +84,10 @@ def update_product(product_id):
     data.update(product_price)
 
     product_id = int(product_id)
+    product_id_print = str(product_id)
 
     products = read_products_from_csv()
+    message = "product id " + product_id_print + " not found"
 
     product_to_be_changed = []
 
@@ -92,7 +96,7 @@ def update_product(product_id):
             product_to_be_changed.append(product)
 
     if len(product_to_be_changed) == 0:
-        return {"message": "Product not found"}, HTTPStatus.NOT_FOUND
+        return {"error": message}, HTTPStatus.NOT_FOUND
 
     product_to_be_changed[0].update(data)
     return (product_to_be_changed[0]), HTTPStatus.OK
